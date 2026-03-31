@@ -1,0 +1,70 @@
+{
+  "entities": {
+    "UserProgress": {
+      "title": "User Progress",
+      "description": "Stores the user's current week, settings, and learning progress.",
+      "type": "object",
+      "properties": {
+        "currentWeek": {
+          "type": "integer",
+          "description": "The current week in the 31-week program."
+        },
+        "remindersEnabled": {
+          "type": "boolean",
+          "description": "Whether daily reminders are enabled."
+        },
+        "reminderTime": {
+          "type": "string",
+          "description": "The time for daily reminders (HH:mm)."
+        },
+        "completedChapters": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of IDs of completed learning chapters."
+        }
+      },
+      "required": ["currentWeek", "remindersEnabled", "reminderTime", "completedChapters"]
+    },
+    "Entry": {
+      "title": "Exercise Entry",
+      "description": "A single morning, evening, or weekend exercise entry.",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The ISO date of the entry."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["morning", "evening", "weekend"],
+          "description": "The type of session."
+        },
+        "completions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stem": { "type": "string" },
+              "endings": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "required": ["date", "type", "completions"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "UserProgress" },
+      "description": "User profile and progress settings."
+    },
+    "/users/{userId}/entries/{entryId}": {
+      "schema": { "$ref": "Entry" },
+      "description": "Individual exercise entries for the user."
+    }
+  }
+}
